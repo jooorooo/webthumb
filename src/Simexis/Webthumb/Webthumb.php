@@ -124,7 +124,7 @@ class Webthumb
 
 		//The installation if you do not specify the path to the appropriate directory
 		if (is_null($save_path)) {
-			$save_path = 'thumbs' . DIRECTORY_SEPARATOR . 'webthumb_capture_' . uniqid(md5($this->url)) . '.' . $config['encoding'];
+			$save_path = $config['local_cache_dir'] . DIRECTORY_SEPARATOR . 'webthumb_capture_' . uniqid(md5($this->url)) . '.' . $config['encoding'];
 		}
 		
 		//and generates a command hit the phantomjs
@@ -132,7 +132,7 @@ class Webthumb
 			$config['phantom_js_root'] . DIRECTORY_SEPARATOR . $this->bin,
 			$config['phantom_js_root'] . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . static::SCRIPT_NAME,
 			$this->url,
-			$config['local_cache_dir'] . DIRECTORY_SEPARATOR . $save_path,
+            public_path() . DIRECTORY_SEPARATOR . $config['local_cache_dir'] . DIRECTORY_SEPARATOR . $save_path,
 			$this->screen_width,
 			$this->screen_height
 		]);
@@ -146,6 +146,6 @@ class Webthumb
 		}
 
 		//Return the saved path After a successful save
-		return $save_path;
+		return $config['local_cache_dir'] . '/' . $save_path;
 	}
 }
