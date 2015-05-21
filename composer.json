@@ -1,0 +1,19 @@
+{
+    "name": "simexis/webthumb",
+    "description": "",
+    "authors": [
+        {
+            "name": "Georgi Nachev",
+            "email": "jooorooo@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Simexis\\Webthumb\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
