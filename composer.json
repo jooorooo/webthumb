@@ -15,5 +15,14 @@
             "Simexis\\Webthumb\\": "src/"
         }
     },
-    "minimum-stability": "stable"
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Simexis\\Webthumb\\WebthumbServiceProvider"
+			],
+			"aliases": {
+				"Webthumb": "Simexis\\Webthumb\\Facades\\Webthumb"
+			}
+		}
+	}
 }

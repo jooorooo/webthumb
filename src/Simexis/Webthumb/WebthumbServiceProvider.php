@@ -5,13 +5,6 @@ use Illuminate\Support\ServiceProvider;
 class WebthumbServiceProvider extends ServiceProvider {
 
 	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = false;
-
-	/**
 	 * Bootstrap the application events.
 	 *
 	 * @return void
@@ -39,12 +32,6 @@ class WebthumbServiceProvider extends ServiceProvider {
         {
             return new Webthumb($app['config']);
         });
-
-        $this->app->booting(function()
-		{
-			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
-			$loader->alias('Webthumb', 'Simexis\Webthumb\Facades\Webthumb');
-		});
 	}
 
 	/**
