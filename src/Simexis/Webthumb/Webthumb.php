@@ -1,6 +1,6 @@
 <?php namespace Simexis\Webthumb;
 
-
+use Symfony\Component\Process\Process;
 use Illuminate\Config\Repository;
 
 class Webthumb
@@ -9,7 +9,7 @@ class Webthumb
 	const BIN_PATH_MAC = 'bin/mac/phantomjs';
 	const BIN_PATH_LINUX_I686 = 'bin/linux/i686/phantomjs';
 	const BIN_PATH_LINUX_X86_64 = 'bin/linux/x86_64/phantomjs';
-	const SCRIPT_NAME = 'capture.coffee';
+	const SCRIPT_NAME = 'page.js';
 
 	protected $bin = null;
 
@@ -51,7 +51,7 @@ class Webthumb
 	 */
 	public function setUrl($url)
 	{
-		if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+		if ($url && filter_var($url, FILTER_VALIDATE_URL) === false) {
 			throw new \InvalidArgumentException();
 		}
 		$this->url = $url;
@@ -110,42 +110,37 @@ class Webthumb
 	 * Save the capture to the specified URL
 	 * @param null|string $save_path
 	 * @throws OutOfBoundsException
-	 * @throws ErrorException
-	 * @return null|string
+	 * @throws Error
+	 * @return \stdClass
 	 */
 	public function save($save_path = null)
 	{
-		//Error If the URL does not exist
-		if(is_null($this->url)){
-			throw new \OutOfBoundsException();
-		}
-
 		$config = $this->config->get('webthumb');
 
 		//The installation if you do not specify the path to the appropriate directory
 		if (is_null($save_path)) {
-			$save_path = $config['local_cache_dir'] . DIRECTORY_SEPARATOR . 'webthumb_capture_' . uniqid(md5($this->url)) . '.' . $config['encoding'];
+			$save_path = public_path() . DIRECTORY_SEPARATOR . $config['local_cache_dir'] . DIRECTORY_SEPARATOR . $config['local_cache_dir'] . DIRECTORY_SEPARATOR . 'webthumb_capture_' . uniqid(md5($this->url)) . '.' . $config['encoding'];
 		}
 		
 		//and generates a command hit the phantomjs
 		$command = implode(' ', [
 			$config['phantom_js_root'] . DIRECTORY_SEPARATOR . $this->bin,
 			$config['phantom_js_root'] . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . static::SCRIPT_NAME,
-			$this->url,
-            public_path() . DIRECTORY_SEPARATOR . $config['local_cache_dir'] . DIRECTORY_SEPARATOR . $save_path,
-			$this->screen_width,
-			$this->screen_height
+			sprintf('--url="%s"', $this->url),
+			sprintf('--output="%s"', $save_path),
+			'--width=' . $this->screen_width,
+			'--height=' . $this->screen_height
 		]);
 
-		//Run the command
-		exec($command, $std_out, $return_code);
-
-		//Exception After moss in error
-		if($return_code !== 0){
-			throw new \ErrorException();
+		$proccess = new Process($command);
+		if($proccess->run() === 0) {
+			return json_decode($proccess->getOutput());
 		}
-
-		//Return the saved path After a successful save
-		return $config['local_cache_dir'] . '/' . $save_path;
+		
+		if($out = json_decode($proccess->getOutput())) {
+			throw new Error($out->message, $out->code);
+		}
+		
+		throw new Error('Undefined error!');
 	}
 }

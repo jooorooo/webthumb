@@ -5,50 +5,27 @@ This is a library for PHP to take a screen shot using PhantomJS.
 
 It is easy specification of only have Exec the phantomjs command in the middle.
 
-Webthumb Class for Laravel 5
+Webthumb Class for Laravel 5.3
 
 ## Requirements
 
-* Laravel 5.X
-* php 5.4+
-* php exec enabled
+* Laravel 5.3
+* php 5.6+
 
 ## Installation
 
 ##### Step 1: Install package using [Composer](https://getcomposer.org)
 
-Add simexis/webthumb to "require" section of your composer.json
-
 ```javascript
-"require": {
-    "simexis/webthumb": ">=1.0"
-},
+composer require simexis/webthumb
 ```
 
-Add repository to "repositories" section of your composer.json
+### Step 2: Laravel 5.5+
 
-```javascript
-"repositories": [ {
-	"type": "vcs",
-	"url": "https://github.com/jooorooo/webthumb.git"
-}],
-```
+If you don't use auto-discovery, add the ServiceProvider to the providers array in config/app.php
 
-Then install dependencies using following command:
-```bash    
-php composer.phar install
-```
-
-or
-
-```bash    
-php composer.phar update
-```
-
-##### Step 2: Laravel Setup
-Add following line to 'providers' section of app/config/app.php file:
 ```php
-'Simexis\Webthumb\WebthumbServiceProvider',
+Simexis\Webthumb\WebthumbServiceProvider::class,
 ```
 
 ## Usage

@@ -35,15 +35,15 @@ class WebthumbServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->app['webthumb'] = $this->app->share(function($app)
+		$this->app->singleton('webthumb', function($app)
         {
             return new Webthumb($app['config']);
         });
 
         $this->app->booting(function()
 		{
-		  $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-		  $loader->alias('Webthumb', 'Simexis\Webthumb\Facades\Webthumb');
+			$loader = \Illuminate\Foundation\AliasLoader::getInstance();
+			$loader->alias('Webthumb', 'Simexis\Webthumb\Facades\Webthumb');
 		});
 	}
 
@@ -54,7 +54,9 @@ class WebthumbServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return [
+			'webthumb'
+		];
 	}
 
 }
